@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page not found — FrameLab</title>
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#08090b" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+
+  <body>
+    <header class="error-header">
+      <div class="shell error-header-inner">
+        <a class="brand" href="%BASE_URL%" aria-label="FrameLab home">
+          <img class="brand-mark" src="/mark.svg" alt="" width="28" height="28" />
+          <span class="brand-name">FrameLab</span>
+        </a>
+        <nav aria-label="Error page">
+          <a href="%BASE_URL%">Home</a>
+          <a href="https://github.com/zenou101/framelab/releases">Releases <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="shell error-page">
+      <div class="error-grid">
+        <div class="error-copy">
+          <p class="eyebrow"><span class="err-dot" aria-hidden="true"></span>Status 404 · not found</p>
+          <h1>This page is out of frame.</h1>
+          <p>
+            The address does not match anything on this site. The application, the downloads and the
+            documentation are all still where you left them.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="%BASE_URL%">
+              Back to FrameLab
+              <span aria-hidden="true">↑</span>
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/zenou101/framelab/releases">
+              View releases <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="trace" aria-hidden="true">
+          <div class="trace-head">
+            <span>Frame trace</span>
+            <span class="lost">Capture lost</span>
+          </div>
+          <svg viewBox="0 0 460 190" role="presentation">
+            <g stroke="#1c2026" stroke-width="1">
+              <line x1="0" y1="30" x2="460" y2="30" />
+              <line x1="0" y1="95" x2="460" y2="95" />
+              <line x1="0" y1="160" x2="460" y2="160" />
+            </g>
+            <g stroke="#ffffff" stroke-opacity="0.04">
+              <line x1="60" y1="18" x2="60" y2="172" />
+              <line x1="150" y1="18" x2="150" y2="172" />
+              <line x1="240" y1="18" x2="240" y2="172" />
+              <line x1="330" y1="18" x2="330" y2="172" />
+              <line x1="420" y1="18" x2="420" y2="172" />
+            </g>
+            <path
+              d="M16 95 H78 l9 -22 l11 48 l10 -37 l9 15 l6 -4 H182"
+              fill="none"
+              stroke="#6b9dff"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+            />
+            <circle cx="190" cy="95" r="3.5" fill="#42c98b" />
+            <line x1="212" y1="95" x2="314" y2="95" stroke="#3a4048" stroke-width="1" stroke-dasharray="2 6" />
+            <text
+              x="330"
+              y="99"
+              fill="#7d848f"
+              font-family="IBM Plex Mono, monospace"
+              font-size="9"
+              letter-spacing="2"
+            >
+            NO SIGNAL
+            </text>
+          </svg>
+          <p class="trace-note">The app is fine. This address is not.</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="error-footer">
+      <div class="shell">
+        <span>© 2026 FrameLab · MIT licence</span>
+        <span>
+          <a href="https://github.com/zenou101/framelab">GitHub</a> ·
+          <a href="https://github.com/zenou101/framelab/blob/main/PRIVACY.md">Privacy</a> ·
+          <a href="https://github.com/zenou101/framelab/issues">Report a problem</a>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>

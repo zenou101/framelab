@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zenou101.github.io/framelab/sitemap.xml

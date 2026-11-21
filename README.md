@@ -127,6 +127,12 @@ Use FrameLab only on systems and software you are entitled to monitor. Do not us
 with, circumvent or gain advantage in multiplayer games, and comply with the terms of service of any
 game, launcher or platform you use it with.
 
+## Website
+
+The landing page lives in [`site/`](site/) and is deployed to GitHub Pages by
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml). Build, asset and deployment notes are
+in [site/README.md](site/README.md).
+
 ## Licence
 
 FrameLab is released under the [MIT License](LICENSE). Copyright (c) 2026 FrameLab.

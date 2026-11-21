@@ -19,3 +19,7 @@ src-tauri/target/
 Thumbs.db
 .DS_Store
 *.log
+
+# Website build output and dependencies
+site/node_modules/
+site/dist/
