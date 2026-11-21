@@ -1,0 +1,50 @@
+[package]
+name = "framelab"
+version = "0.1.0"
+description = "Local-first gaming performance monitor and benchmarker"
+edition = "2021"
+rust-version = "1.90"
+authors = ["FrameLab"]
+
+[lib]
+name = "framelab_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-window-state = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "time", "process", "sync", "macros", "io-util"] }
+sysinfo = "0.33"
+rusqlite = { version = "0.32", features = ["bundled"] }
+thiserror = "2"
+sha2 = "0.10"
+chrono = { version = "0.4", features = ["serde"] }
+windows-sys = { version = "0.59", features = [
+  "Win32_Foundation",
+  "Win32_System_Performance",
+  "Win32_System_Threading",
+  "Win32_System_ProcessStatus",
+  "Win32_System_Registry",
+  "Win32_System_LibraryLoader",
+  "Win32_System_SystemInformation",
+  "Win32_Graphics_Gdi",
+  "Win32_UI_Shell",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_Storage_FileSystem",
+] }
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
