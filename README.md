@@ -49,8 +49,15 @@ hardware, driver or anti-cheat configuration; see [Limitations](#limitations).
 
 ## Installation
 
-**No public installer is available yet.** Builds are produced locally and are not currently
-distributed.
+Download the current build from [Releases](https://github.com/zenou101/framelab/releases):
+
+- **Installer** (`FrameLab_0.1.0_x64-setup.exe`) — installs per user; administrator rights are not
+  required. Recordings and settings go to `%APPDATA%\app.framelab.desktop`.
+- **Portable** (`FrameLab_0.1.0_x64-portable.zip`) — extract anywhere and run `framelab.exe`.
+  Settings and recordings are kept in a `data` folder beside the executable, so the whole folder can
+  be moved or deleted as one unit.
+
+Builds are unsigned, so Windows SmartScreen may warn about an unknown publisher.
 
 To build from source you need:
 

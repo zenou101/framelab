@@ -130,6 +130,12 @@ pub struct Capture {
 pub fn sidecar_path(resource_dir: Option<&Path>) -> Option<PathBuf> {
     let mut candidates: Vec<PathBuf> = Vec::new();
     if let Some(dir) = resource_dir {
+        // Bundled resources keep their configured path ("binaries/presentmon/*").
+        candidates.push(
+            dir.join("binaries")
+                .join("presentmon")
+                .join("PresentMon.exe"),
+        );
         candidates.push(dir.join("presentmon").join("PresentMon.exe"));
         candidates.push(dir.join("PresentMon.exe"));
     }
@@ -450,5 +456,21 @@ mod tests {
     fn warnings_before_header_are_not_data() {
         let warning = "warning: only one of the following options may be used";
         assert!(CsvParser::header(warning).is_none());
+    }
+
+    #[test]
+    fn finds_sidecar_in_bundled_resource_layout() {
+        // Bundles keep the configured resource path, so the helper sits under
+        // binaries/presentmon beside the executable.
+        let root = std::env::temp_dir().join(format!("framelab-sidecar-{}", std::process::id()));
+        let dir = root.join("binaries").join("presentmon");
+        std::fs::create_dir_all(&dir).expect("create temp resource dir");
+        let exe = dir.join("PresentMon.exe");
+        std::fs::write(&exe, b"stub").expect("write stub sidecar");
+
+        let found = sidecar_path(Some(&root));
+        assert_eq!(found.as_deref(), Some(exe.as_path()));
+
+        let _ = std::fs::remove_dir_all(&root);
     }
 }

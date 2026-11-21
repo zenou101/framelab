@@ -81,11 +81,25 @@ pub fn run() {
         ))
         .setup(|app| {
             let handle = app.handle().clone();
-            let data_dir = app
-                .path()
-                .app_data_dir()
-                .unwrap_or_else(|_| std::env::temp_dir().join("framelab"));
-            let config_dir = app.path().app_config_dir().unwrap_or_else(|_| data_dir.clone());
+            // A portable copy ships a marker file beside the executable and keeps
+            // its database and settings in a data folder next to it instead of in
+            // the user profile.
+            let portable_root = std::env::current_exe()
+                .ok()
+                .and_then(|path| path.parent().map(|dir| dir.to_path_buf()))
+                .filter(|dir| dir.join("framelab-portable.txt").is_file());
+
+            let data_dir = match &portable_root {
+                Some(root) => root.join("data"),
+                None => app
+                    .path()
+                    .app_data_dir()
+                    .unwrap_or_else(|_| std::env::temp_dir().join("framelab")),
+            };
+            let config_dir = match &portable_root {
+                Some(root) => root.join("data"),
+                None => app.path().app_config_dir().unwrap_or_else(|_| data_dir.clone()),
+            };
             let resource_dir = app.path().resource_dir().ok();
             let _ = std::fs::create_dir_all(&data_dir);
             let _ = std::fs::create_dir_all(&config_dir);

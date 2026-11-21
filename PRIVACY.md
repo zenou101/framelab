@@ -74,6 +74,7 @@ All application data stays in your Windows user profile:
 | `%APPDATA%\app.framelab.desktop\framelab.db` | Recorded sessions: frame timings, system samples, statistics and session metadata |
 | `%APPDATA%\app.framelab.desktop\settings.json` | Your preferences, including diagnostic thresholds and display options |
 | `%LOCALAPPDATA%\app.framelab.desktop\` | WebView2 runtime data used to render the interface |
+| `data\` beside `framelab.exe` | The same database and settings file, when running the portable build |
 | A location you choose | CSV or JSON files you export |
 
 Recorded sessions can contain the name and path of a game executable and the hardware configuration of
@@ -86,6 +87,8 @@ the machine. Treat exported files as you would any other file about your compute
 - An optional retention period can remove sessions older than a chosen number of days.
 - Uninstalling FrameLab removes the application but **does not** delete your recorded sessions or
   settings. To remove them, delete `%APPDATA%\app.framelab.desktop` after uninstalling.
+- A portable copy keeps everything in its own folder: delete the `data` folder beside `framelab.exe`,
+  or delete the whole extracted folder.
 - Exported CSV or JSON files are outside the application's control; delete them yourself.
 
 ## 7. Security
