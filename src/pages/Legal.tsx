@@ -17,6 +17,15 @@ const TABS: { value: Tab; label: string }[] = [
   { value: "thirdParty", label: "Third-party" },
 ];
 
+// Links inside the documents point at files in the repository; in the app the
+// matching document is already bundled, so open its tab instead.
+const DOC_TABS: Record<string, Tab> = {
+  LICENSE: "license",
+  "PRIVACY.md": "privacy",
+  "DISCLAIMER.md": "disclaimer",
+  "THIRD_PARTY_NOTICES.md": "thirdParty",
+};
+
 export default function Legal() {
   const version = useApp((state) => state.bootstrap?.version ?? "0.1.0");
   const [tab, setTab] = useState<Tab>("about");
@@ -119,7 +128,13 @@ export default function Legal() {
         ) : (
           <Panel>
             <div className="px-5 py-4">
-              <Markdown text={LEGAL_DOCS[tab]} />
+              <Markdown
+                text={LEGAL_DOCS[tab]}
+                onOpenDoc={(doc) => {
+                  const target = DOC_TABS[doc];
+                  if (target) setTab(target);
+                }}
+              />
             </div>
           </Panel>
         )}

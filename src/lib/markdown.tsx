@@ -11,7 +11,11 @@ import { Fragment, type ReactNode } from "react";
 
 const INLINE = /(\*\*[^*]+\*\*|\*[^*\n]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\)|<https?:\/\/[^>\s]+>|https?:\/\/[^\s)]+)/g;
 
-function renderInline(text: string, keyPrefix: string): ReactNode[] {
+function renderInline(
+  text: string,
+  keyPrefix: string,
+  onOpenDoc?: (doc: string) => void,
+): ReactNode[] {
   const parts = text.split(INLINE).filter((part) => part !== "");
   return parts.map((part, index) => {
     const key = `${keyPrefix}-${index}`;
@@ -39,17 +43,39 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
     const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(part);
     if (link) {
       const [, label, href] = link;
-      const external = /^https?:/.test(href);
-      return (
-        <a
-          key={key}
-          href={href}
-          {...(external ? { target: "_blank", rel: "noreferrer noopener" } : {})}
-          className="text-accent underline decoration-[color-mix(in_oklab,var(--accent)_45%,transparent)] underline-offset-2 hover:decoration-accent"
-        >
-          {label}
-        </a>
-      );
+      const linkClass =
+        "text-accent underline decoration-[color-mix(in_oklab,var(--accent)_45%,transparent)] underline-offset-2 hover:decoration-accent";
+
+      // External links open in the browser.
+      if (/^https?:/.test(href)) {
+        return (
+          <a key={key} href={href} target="_blank" rel="noreferrer noopener" className={linkClass}>
+            {label}
+          </a>
+        );
+      }
+
+      // In-page anchors have no target inside the app; the section numbers are
+      // visible in the text, so render the label without a link.
+      if (href.startsWith("#")) {
+        return <Fragment key={key}>{label}</Fragment>;
+      }
+
+      // Links between the bundled documents switch tabs instead of navigating.
+      const doc = href.split("#")[0].replace(/^\.\//, "");
+      if (onOpenDoc) {
+        return (
+          <button
+            key={key}
+            type="button"
+            onClick={() => onOpenDoc(doc)}
+            className={linkClass}
+          >
+            {label}
+          </button>
+        );
+      }
+      return <Fragment key={key}>{label}</Fragment>;
     }
     if (part.startsWith("<http") && part.endsWith(">")) {
       const href = part.slice(1, -1);
@@ -86,16 +112,24 @@ function consumeItem(lines: string[], start: number, first: string): [string, nu
   return [item, index];
 }
 
-export function Markdown({ text }: { text: string }) {
+export function Markdown({
+  text,
+  onOpenDoc,
+}: {
+  text: string;
+  onOpenDoc?: (doc: string) => void;
+}) {
   const lines = text.split(/\r?\n/);
   const blocks: ReactNode[] = [];
   let index = 0;
+
+  const inline = (value: string, keyPrefix: string) => renderInline(value, keyPrefix, onOpenDoc);
 
   const flushParagraph = (buffer: string[], key: string) => {
     if (buffer.length === 0) return;
     blocks.push(
       <p key={key} className="text-[12.5px] leading-relaxed text-text-2">
-        {renderInline(buffer.join(" "), key)}
+        {inline(buffer.join(" "), key)}
       </p>,
     );
   };
@@ -126,7 +160,7 @@ export function Markdown({ text }: { text: string }) {
     const heading = /^(#{1,4})\s+(.*)$/.exec(line);
     if (heading) {
       const level = heading[1].length;
-      const content = renderInline(heading[2], key);
+      const content = inline(heading[2], key);
       const className =
         level <= 2
           ? "mt-2 text-[14px] font-medium tracking-[-0.01em] text-text-1"
@@ -163,7 +197,7 @@ export function Markdown({ text }: { text: string }) {
               <tr className="border-b border-line bg-[color-mix(in_oklab,var(--text-1)_3%,transparent)] text-left">
                 {header.map((cell, cellIndex) => (
                   <th key={cellIndex} className="px-2.5 py-1.5 font-medium text-text-2">
-                    {renderInline(cell, `${key}-h-${cellIndex}`)}
+                    {inline(cell, `${key}-h-${cellIndex}`)}
                   </th>
                 ))}
               </tr>
@@ -173,7 +207,7 @@ export function Markdown({ text }: { text: string }) {
                 <tr key={rowIndex} className="border-b border-line last:border-0">
                   {row.map((cell, cellIndex) => (
                     <td key={cellIndex} className="px-2.5 py-1.5 align-top text-text-2">
-                      {renderInline(cell, `${key}-r${rowIndex}-${cellIndex}`)}
+                      {inline(cell, `${key}-r${rowIndex}-${cellIndex}`)}
                     </td>
                   ))}
                 </tr>
@@ -195,7 +229,7 @@ export function Markdown({ text }: { text: string }) {
       blocks.push(
         <ul key={key} className="ml-4 list-disc space-y-1 text-[12.5px] leading-relaxed text-text-2 marker:text-text-3">
           {items.map((item, itemIndex) => (
-            <li key={itemIndex}>{renderInline(item, `${key}-i-${itemIndex}`)}</li>
+            <li key={itemIndex}>{inline(item, `${key}-i-${itemIndex}`)}</li>
           ))}
         </ul>,
       );
@@ -212,7 +246,7 @@ export function Markdown({ text }: { text: string }) {
       blocks.push(
         <ol key={key} className="ml-4 list-decimal space-y-1 text-[12.5px] leading-relaxed text-text-2 marker:text-text-3">
           {items.map((item, itemIndex) => (
-            <li key={itemIndex}>{renderInline(item, `${key}-o-${itemIndex}`)}</li>
+            <li key={itemIndex}>{inline(item, `${key}-o-${itemIndex}`)}</li>
           ))}
         </ol>,
       );
@@ -227,7 +261,7 @@ export function Markdown({ text }: { text: string }) {
       }
       blocks.push(
         <blockquote key={key} className="border-l-2 border-line-strong pl-3 text-[12px] leading-relaxed text-text-3">
-          {renderInline(quoted.join(" "), key)}
+          {inline(quoted.join(" "), key)}
         </blockquote>,
       );
       continue;
