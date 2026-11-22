@@ -299,14 +299,16 @@
                 <div class="entry-body">
                   <h3>Your library, and your data</h3>
                   <p>
-                    Steam libraries and Epic installs are read from local files, and any executable
-                    can be added by hand. Launching only runs something already in the library.
-                    History stays until you delete it; sessions export to CSV or JSON.
+                    Steam, Epic and Xbox app libraries are read from local files, and any executable
+                    can be added by hand. Xbox app and Microsoft Store games are launched through
+                    their Windows package identity. History stays until you delete it; sessions
+                    export to CSV or JSON.
                   </p>
                   <div class="filelist" aria-label="Local files FrameLab reads and writes">
                     <p class="micro-label">Read locally</p>
                     <code>steamapps\libraryfolders.vdf</code>
                     <code>C:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat</code>
+                    <code>XboxGames\*\Content\MicrosoftGame.config</code>
                     <p class="micro-label">Written locally</p>
                     <code>%APPDATA%\app.framelab.desktop\framelab.db</code>
                   </div>

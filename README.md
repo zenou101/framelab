@@ -5,7 +5,7 @@
 FrameLab shows what your machine is doing while a game runs, records real frame timings, and stores
 the results on your own computer. It has no accounts, no cloud component and no telemetry.
 
-> **Status: early development preview (0.1.0).** FrameLab is usable but incomplete. Features, user
+> **Status: early development preview (0.2.0).** FrameLab is usable but incomplete. Features, user
 > interface and stored data formats may change without notice, and no compatibility or stability
 > promise is made for this preview. See [Limitations](#limitations) before relying on any measurement.
 
@@ -28,8 +28,10 @@ the results on your own computer. It has no accounts, no cloud component and no 
 - **Analysis** — configurable, clearly-labelled heuristic observations (pacing instability, spike
   clusters, memory or VRAM pressure and similar) that describe what was measured and never claim a
   definitive cause.
-- **Games library** — reads Steam and Epic installations from their local manifests, or you can add
-  an executable yourself. Launching only ever runs an executable already in your library.
+- **Games library** — reads Steam, Epic, Xbox app and Microsoft Store installations (including PC
+  Game Pass titles) from their local manifests, or you can add an executable yourself. Xbox and
+  Store games are activated through their Windows package identity. Launching only ever runs a game
+  already in your library.
 
 Anything a machine does not expose is shown as **unavailable with the reason**, never as a zero.
 
@@ -51,9 +53,9 @@ hardware, driver or anti-cheat configuration; see [Limitations](#limitations).
 
 Download the current build from [Releases](https://github.com/zenou101/framelab/releases):
 
-- **Installer** (`FrameLab_0.1.0_x64-setup.exe`) — installs per user; administrator rights are not
+- **Installer** (`FrameLab_0.2.0_x64-setup.exe`) — installs per user; administrator rights are not
   required. Recordings and settings go to `%APPDATA%\app.framelab.desktop`.
-- **Portable** (`FrameLab_0.1.0_x64-portable.zip`) — extract anywhere and run `framelab.exe`.
+- **Portable** (`FrameLab_0.2.0_x64-portable.zip`) — extract anywhere and run `framelab.exe`.
   Settings and recordings are kept in a `data` folder beside the executable, so the whole folder can
   be moved or deleted as one unit.
 

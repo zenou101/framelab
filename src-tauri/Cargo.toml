@@ -1,6 +1,6 @@
 [package]
 name = "framelab"
-version = "0.1.0"
+version = "0.2.0"
 description = "Local-first gaming performance monitor and benchmarker"
 edition = "2021"
 rust-version = "1.90"

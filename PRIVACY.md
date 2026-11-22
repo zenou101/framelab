@@ -2,9 +2,9 @@
 
 **FrameLab — how the application handles data**
 
-Last updated: 21 November 2026
+Last updated: 22 November 2026
 
-Applies to: FrameLab 0.1.0 and later development builds
+Applies to: FrameLab 0.2.0 and later development builds
 
 FrameLab is built so that performance monitoring does not require a cloud service. This policy
 explains what the application reads, where it is stored, and what leaves your computer. It is written
@@ -33,7 +33,7 @@ To display and record performance information, FrameLab reads the following from
 | Performance counters — CPU utilisation and clock, per-core load, memory use, GPU engine utilisation, VRAM use, disk and network throughput | To show live monitoring and to store samples alongside frames |
 | Process information — process names, process IDs and, where the operating system exposes it, executable paths | To let you choose which running game to monitor |
 | Frame timing events — presentation and display timestamps for the process you attach to | To compute frame times, FPS statistics and stutters |
-| Game library metadata — titles and install paths read from local Steam and Epic manifests | To build your games library |
+| Game library metadata — titles and install paths read from local Steam, Epic, Xbox app and Microsoft Store manifests | To build your games library |
 | Application settings and recording metadata | To remember your preferences and describe each session |
 
 This information is used **only** to provide the application's features on your device. It is not used

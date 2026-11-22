@@ -86,16 +86,21 @@ export default function Games() {
     }
   };
 
-  const missing = detected.filter(
-    (entry) => !games.some((game) => game.name.toLowerCase() === entry.name.toLowerCase()),
-  );
+  const isImported = (entry: DetectedGame) =>
+    games.some((game) =>
+      game.launcherId && entry.launcherId
+        ? game.launcherId === entry.launcherId
+        : game.name.toLowerCase() === entry.name.toLowerCase(),
+    );
+
+  const missing = detected.filter((entry) => !isImported(entry));
 
   return (
     <>
       <PageHeader
         eyebrow="Local discovery"
         title="Games"
-        description="Steam and Epic installs are read from their manifests on this machine. Launching only ever runs an executable that is already in this library."
+        description="Steam, Epic and Xbox app installs are read from their manifests on this machine. Launching only ever runs a game that is already in this library."
         actions={
           <>
             <Button variant="secondary" size="sm" onClick={() => void addManually()} disabled={busy}>
@@ -134,7 +139,9 @@ export default function Games() {
                       <div className="truncate text-[12.5px] text-text-1">{game.name}</div>
                       <div className="mt-0.5 flex items-center gap-1.5">
                         <Pill tone="neutral">{game.source}</Pill>
-                        {game.launcherId ? <span className="text-[10px] text-text-3">{game.launcherId}</span> : null}
+                        {game.launcherId ? (
+                          <span className="max-w-[150px] truncate text-[10px] text-text-3">{game.launcherId}</span>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -171,7 +178,7 @@ export default function Games() {
         <Panel>
           <PanelHeader
             title={`${detected.length} installed games detected`}
-            hint="Read from Steam libraryfolders/ACF files and Epic launcher manifests."
+            hint="Read from Steam ACF files, Epic launcher manifests and Xbox app / Microsoft Store package manifests."
             action={
               missing.length ? (
                 <Button variant="secondary" size="sm" onClick={() => void importDetected()} disabled={busy}>
@@ -183,7 +190,7 @@ export default function Games() {
           {detected.length === 0 ? (
             <Empty
               title={busy ? "Scanning launchers…" : "No launcher libraries found"}
-              description="FrameLab looks in the default Steam and Epic locations. You can still add an executable directly."
+              description="FrameLab looks in the default Steam, Epic and Xbox app locations. You can still add an executable directly."
             />
           ) : (
             <ul className="max-h-[280px] divide-y divide-line overflow-y-auto border-t border-line">
@@ -193,12 +200,10 @@ export default function Games() {
                   <span className="text-[10.5px] text-text-3">{entry.source}</span>
                   <span
                     className={`text-[10.5px] ${
-                      games.some((game) => game.name.toLowerCase() === entry.name.toLowerCase())
-                        ? "text-ok"
-                        : "text-text-3"
+                      isImported(entry) ? "text-ok" : "text-text-3"
                     }`}
                   >
-                    {games.some((game) => game.name.toLowerCase() === entry.name.toLowerCase()) ? "in library" : "not imported"}
+                    {isImported(entry) ? "in library" : "not imported"}
                   </span>
                 </li>
               ))}
