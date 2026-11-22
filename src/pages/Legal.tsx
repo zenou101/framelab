@@ -27,7 +27,7 @@ const DOC_TABS: Record<string, Tab> = {
 };
 
 export default function Legal() {
-  const version = useApp((state) => state.bootstrap?.version ?? "0.2.0");
+  const version = useApp((state) => state.bootstrap?.version ?? "0.2.1");
   const [tab, setTab] = useState<Tab>("about");
 
   // Documents differ greatly in length; start each one at the top.

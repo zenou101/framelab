@@ -4,7 +4,7 @@
 
 Last updated: 22 November 2026
 
-Applies to: FrameLab 0.2.0 and later development builds
+Applies to: FrameLab 0.2.1 and later development builds
 
 FrameLab is built so that performance monitoring does not require a cloud service. This policy
 explains what the application reads, where it is stored, and what leaves your computer. It is written

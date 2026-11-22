@@ -1,7 +1,7 @@
 {
   "name": "framelab",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "FrameLab - local-first gaming performance monitoring and benchmarking",
   "type": "module",
   "scripts": {
