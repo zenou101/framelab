@@ -1,161 +1,96 @@
+<div align="center">
+
+<img src="assets/framelab-mark.svg" width="84" height="84" alt="FrameLab icon">
+
 # FrameLab
 
-**A local-first Windows performance monitor and benchmark recorder for PC games.**
+**Find the frame that made your game hitch.**
 
-FrameLab shows what your machine is doing while a game runs, records real frame timings, and stores
-the results on your own computer. It has no accounts, no cloud component and no telemetry.
+Record a run, line up frame times with CPU and GPU activity, and see the spikes an average FPS can hide. Your recordings stay on your PC.
 
-> **Status: early development preview (0.2.1).** FrameLab is usable but incomplete. Features, user
-> interface and stored data formats may change without notice, and no compatibility or stability
-> promise is made for this preview. See [Limitations](#limitations) before relying on any measurement.
+[![Release](https://img.shields.io/github/v/release/zenou101/framelab?label=release&color=487bd8)](https://github.com/zenou101/framelab/releases/latest)
+[![CI](https://github.com/zenou101/framelab/actions/workflows/ci.yml/badge.svg)](https://github.com/zenou101/framelab/actions/workflows/ci.yml)
+![Platform](https://img.shields.io/badge/Windows-10%20%2F%2011%20x64-20568d)
+[![Licence](https://img.shields.io/badge/licence-MIT-36795f)](LICENSE)
 
----
+[**Download FrameLab**](https://github.com/zenou101/framelab/releases/latest) · [Website](https://zenou101.github.io/framelab/) · [First benchmark](#record-your-first-benchmark) · [Build from source](#build-from-source)
 
-## What it does today
+</div>
 
-- **Live system monitoring** — CPU utilisation and clock, per-core load, memory, GPU utilisation and
-  VRAM use, disk and network throughput where Windows exposes the counters, plus your display mode
-  and refresh rate.
-- **Frame capture** — attaches to a game that is already running and reads frame timings through
-  Intel's PresentMon. *Displayed* FPS (frames that reached the screen) and *Presented* FPS (frames the
-  game submitted) are captured and reported separately.
-- **Benchmark recording** — saves frame timings and system samples for a session to a local SQLite
-  database, in durable chunks, so an interrupted session keeps what was already written.
-- **Results** — average, median, 1% low and 0.1% low FPS, frame-time percentiles, stutter counts and
-  frame-time charts, with a clear note of which measurement each figure comes from.
-- **History** — every session stays on your machine until you delete it, and can be exported as CSV
-  or JSON.
-- **Analysis** — configurable, clearly-labelled heuristic observations (pacing instability, spike
-  clusters, memory or VRAM pressure and similar) that describe what was measured and never claim a
-  definitive cause.
-- **Games library** — reads Steam, Epic, Xbox app and Microsoft Store installations (including PC
-  Game Pass titles) from their local manifests, or you can add an executable yourself. Xbox and
-  Store games are activated through their Windows package identity. Launching only ever runs a game
-  already in your library.
+| System overview | Games library |
+| :---: | :---: |
+| [![FrameLab's dark overview with hardware and live system readings](site/public/screenshots/overview-dark.webp)](site/public/screenshots/overview-dark.webp) | [![FrameLab's Games page in light mode](site/public/screenshots/games-light.webp)](site/public/screenshots/games-light.webp) |
 
-Anything a machine does not expose is shown as **unavailable with the reason**, never as a zero.
-
-## System requirements
-
-| Requirement | Detail |
-| --- | --- |
-| Operating system | Windows 10 (22H2 or later) or Windows 11, 64-bit. ARM64 is not supported. |
-| Runtime | Microsoft Edge WebView2 Evergreen Runtime (present on current Windows 10/11; the installer can bootstrap it). |
-| Memory | 8 GB RAM minimum; 16 GB recommended for modern games. |
-| GPU | A DirectX 12 capable GPU with current drivers. |
-| Disk | About 250 MB for the application, plus roughly 1–2 MB per minute of recorded session. |
-| Permissions | Frame capture uses Windows ETW. Running unelevated usually works; some systems require administrator rights or membership of the local **Performance Log Users** group. |
-
-FrameLab has been exercised on Windows 10 22H2 with an AMD GPU. It has not been tested on every
-hardware, driver or anti-cheat configuration; see [Limitations](#limitations).
+*Captured in FrameLab 0.1.0 on Windows 10 22H2. Later releases also detect Xbox app and Microsoft Store games.*
 
 ## Installation
 
-Download the current build from [Releases](https://github.com/zenou101/framelab/releases):
+Choose a Windows x64 package from the [latest release](https://github.com/zenou101/framelab/releases/latest).
 
-- **Installer** (`FrameLab_0.2.1_x64-setup.exe`) — installs per user; administrator rights are not
-  required. Recordings and settings go to `%APPDATA%\app.framelab.desktop`.
-- **Portable** (`FrameLab_0.2.1_x64-portable.zip`) — extract anywhere and run `framelab.exe`.
-  Settings and recordings are kept in a `data` folder beside the executable, so the whole folder can
-  be moved or deleted as one unit.
+| Package | How to run it | Recordings and settings |
+| --- | --- | --- |
+| **Installer** `x64-setup.exe` | Run the per-user installer. Installation does not require administrator rights. | `%APPDATA%\app.framelab.desktop` |
+| **Portable** `x64-portable.zip` | Extract the ZIP and open `framelab.exe`. | The `data` folder beside the executable |
 
-Builds are unsigned, so Windows SmartScreen may warn about an unknown publisher.
+FrameLab is an early development preview. Features and stored data formats may change. Builds are unsigned, so Windows SmartScreen may show an unknown-publisher warning.
 
-To build from source you need:
+## Record your first benchmark
 
-- Windows 10/11 x64
-- [Rust](https://rustup.rs) with the MSVC toolchain (`stable-x86_64-pc-windows-msvc`)
-- Visual Studio Build Tools with the **Desktop development with C++** workload
-- Node.js 20 or newer with npm
+1. Start your game and open **Benchmarks** in FrameLab.
+2. Select the game's **Running process**, then choose **Attach capture**. Selecting a library entry is optional.
+3. Choose **Record benchmark**, play the section you want to measure, then select **Stop and save**.
+4. Open the frame-time chart in **Results** to find the hitch. **History** lets you reopen the session or export it as CSV or JSON.
 
-```bash
-git clone https://github.com/zenou101/framelab.git
-cd framelab
-npm install
-npm run tauri build
-```
+## What it does today
 
-The installer is written to `src-tauri/target/release/bundle/nsis/`. The application is installed per
-user by default; administrator rights are not required to install it.
+In **Results**, the frame-time trace and system activity are sampled on the same clock. If you felt a hitch during the run, start with the tallest spike and check what else changed at that point.
 
-For development:
+| Measurement | What it tells you |
+| --- | --- |
+| **Displayed and presented FPS** | PresentMon tracks frames that reached the screen separately from frames the game submitted. FrameLab keeps both series so you can see when they diverge. |
+| **Frame time** | Each point measures an interval in milliseconds. A spike marks a longer wait between frames, even when the average FPS looks steady. |
+| **1% and 0.1% lows** | FrameLab converts the mean frame time of the slowest 1% or 0.1% into FPS. The figures appear after 300 and 1,000 valid frames respectively. |
+| **System activity** | CPU load and clocks, GPU and VRAM use, memory, disk and network activity give a spike context. Missing counters are labelled unavailable. |
 
-```bash
-npm install
-npm run tauri dev
-```
+**Games** scans local Steam, Epic, Xbox app and Microsoft Store installations, including installed PC Game Pass titles. You can also add an executable manually. **Analysis** flags patterns such as clustered spikes or memory pressure for you to investigate.
 
-PresentMon is bundled as a resource and is verified against a pinned SHA-256 hash before FrameLab
-runs it. It is not downloaded at runtime.
+## System requirements
 
-## Privacy
-
-FrameLab is designed to keep everything local:
-
-- no account, sign-in or cloud sync;
-- no telemetry, analytics or crash reporting;
-- no upload of measurements, hardware details or session data;
-- no network access required for monitoring, capture, recording or export;
-- session data, settings and exports are stored only in your own user profile.
-
-The only outbound request FrameLab can make is the optional WebView2 runtime download performed by
-the Windows installer when the runtime is missing. Details, including where data is stored and how to
-delete it, are in [PRIVACY.md](PRIVACY.md).
+| Component | Requirement |
+| --- | --- |
+| Operating system | Windows 10 22H2 or Windows 11, x64 |
+| Graphics and memory | DirectX 12-capable GPU with current drivers and at least 8 GB RAM (16 GB recommended) |
+| Storage | Around 250 MB for the app, plus roughly 1–2 MB per recorded minute |
+| Runtime | Microsoft Edge WebView2 Evergreen. The installer can fetch it if needed. |
+| Capture permissions | PresentMon uses Event Tracing for Windows (ETW). Some systems require elevation or membership in **Performance Log Users**. |
 
 ## Limitations
 
-- **Measurements are estimates derived from operating-system counters.** They can be inaccurate,
-  delayed or unavailable, particularly on virtual machines, remote desktops, laptops with hybrid
-  graphics, or systems with Hardware-Accelerated GPU Scheduling enabled.
-- **Some counters are not exposed by every Windows installation.** Disk and network throughput in
-  particular depend on Windows performance counter providers that may be disabled or absent; those
-  values are reported as unavailable rather than guessed.
-- **Temperatures are not read** unless a supported sensor source is present. FrameLab does not
-  present ACPI thermal-zone readings as CPU or GPU temperature.
-- **Frame capture requires ETW access** and may fail without elevation on some systems, and cannot
-  attach to a process that has already exited.
-- **Exclusive fullscreen** presentation modes can hide or restrict monitoring overlays; FrameLab
-  currently has no in-game overlay.
-- **Anti-cheat and protected processes** may block or penalise external monitoring. FrameLab does not
-  bypass, disable or interfere with anti-cheat software, and you are responsible for using it in line
-  with each game's terms.
-- **Not all games, engines or launchers are supported.** PresentMon only sees frames from processes
-  that present through supported Windows presentation APIs.
-- Session data is only as reliable as the machine's clock and counter behaviour while recording.
+FrameLab has been exercised on Windows 10 22H2 with an AMD GPU. Counter accuracy and availability depend on the driver and Windows configuration, particularly on hybrid laptops, virtual machines, remote desktops and systems with hardware-accelerated GPU scheduling. Temperature readings require a supported sensor source.
 
-## Responsible use
+Capture needs a running process and a presentation API supported by PresentMon. Protected games may restrict monitoring. Follow the game's terms. FrameLab has no in-game overlay. Stutter counts and analysis describe the recording and cannot establish the cause of a hitch.
 
-Use FrameLab only on systems and software you are entitled to monitor. Do not use it to interfere
-with, circumvent or gain advantage in multiplayer games, and comply with the terms of service of any
-game, launcher or platform you use it with.
+## Build from source
 
-## Website
+On Windows x64, install Node.js 22 LTS (latest patch) with npm, stable Rust with the `x86_64-pc-windows-msvc` toolchain, and Visual Studio Build Tools with **Desktop development with C++**.
 
-The landing page lives in [`site/`](site/) and is deployed to GitHub Pages by
-[`.github/workflows/pages.yml`](.github/workflows/pages.yml). Build, asset and deployment notes are
-in [site/README.md](site/README.md).
+```powershell
+git clone https://github.com/zenou101/framelab.git
+cd framelab
+npm ci
+npm run tauri dev
+```
+
+To produce the installer, run `npm run tauri build`. The NSIS installer is written to `src-tauri/target/release/bundle/nsis/`. FrameLab bundles PresentMon and checks its SHA-256 hash before running it.
+
+## Privacy
+
+Monitoring, capture and export work offline. FrameLab saves frames and system samples to SQLite in chunks, so an interrupted recording retains the data already written. The app has no accounts, cloud sync or telemetry. See the [privacy policy](PRIVACY.md) for file locations, retention and WebView2 behaviour.
 
 ## Licence
 
-FrameLab is released under the [MIT License](LICENSE). Copyright (c) 2026 FrameLab.
+FrameLab uses the [MIT licence](LICENSE). Intel PresentMon, Inter and other bundled components retain their own licences. See the [third-party notices](THIRD_PARTY_NOTICES.md). FrameLab is provided as is, and its measurements are informational. The [full disclaimer](DISCLAIMER.md) covers warranties and applicable consumer rights.
 
-Bundled and third-party components remain under their own licences, including Intel PresentMon (MIT)
-and the Inter typeface (SIL Open Font License 1.1). See
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the complete list and required notices.
+For the landing page's build and deployment instructions, see the [website README](site/README.md).
 
-## Disclaimer
-
-FrameLab is provided **"as is"**, without warranties of any kind, and is used at your own risk.
-Measurements are informational and must not be treated as professional, diagnostic or safety advice.
-Nothing in the project's documentation excludes or limits rights that cannot lawfully be excluded,
-including guarantees under the Australian Consumer Law where applicable.
-
-Read [DISCLAIMER.md](DISCLAIMER.md) for the full statement.
-
-## Reporting problems and security issues
-
-- Bugs and feature requests: open an issue at https://github.com/zenou101/framelab/issues.
-- Security vulnerabilities: please report them privately to nuxxzul@gmail.com rather than in a public
-  issue.
-
-These documents are provided for transparency and do not constitute legal advice.
+[Report a bug or request a feature](https://github.com/zenou101/framelab/issues). For a security issue, [email the maintainer privately](mailto:nuxxzul@gmail.com).
